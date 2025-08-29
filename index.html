@@ -1185,7 +1185,7 @@ body {
         if (success) {
             // Misserfolg neutralisieren + kleiner Trost
             resultText.textContent = '🍀 Glück gehabt! Misserfolg abgewendet (+1 Marker).';
-            gameState.markers = Math.min(9, gameState.markers + 1);
+            gameState.markers = Math.min(MARKER_CAP, gameState.markers + 1);
             // keine Stage-Strafe
         } else {
             // ursprüngliche Strafe anwenden
@@ -1202,14 +1202,6 @@ body {
             diceActionType = null;
         }, 2000);
 
-        resultText.textContent = message;
-        setTimeout(() => {
-            document.getElementById('dice-container').style.display = 'none';
-            updateUI();
-            if (success || actionType === 'ignore') {
-                nextTurn();
-            }
-        }, 2500);
     }
     function showAmbivalence() {
         if (gameState.ambiv) return;
@@ -1369,10 +1361,12 @@ body {
         });
         skip.addEventListener('click', hideIntroAndStart);
 
-        // Intro beim Laden zeigen
-        document.addEventListener('DOMContentLoaded', () => {
+        // Intro sofort zeigen, wenn DOM schon bereit ist – sonst auf DOMContentLoaded warten
+        if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', showIntro);
+        } else {
         showIntro();
-        });
+        }
     })();
 </script>
 </body> </html>
